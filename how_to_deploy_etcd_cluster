@@ -17,3 +17,35 @@
 	sudo mkdir -p /etc/etcd/pki
 	sudo chown -R etcd:etcd /etc/etcd/
 }
+
+4. Enable and Start etcd service
+{
+  systemctl daemon-reload
+  systemctl enable --now etcd
+}
+
+5. erify Etcd cluster status - In any one of the etcd nodes
+{
+  ETCDCTL_API=3 etcdctl \
+  --endpoints=https://127.0.0.1:2379 \
+  --cacert=/etc/etcd/pki/ca.pem \
+  --cert=/etc/etcd/pki/etcd.pem \
+  --key=/etc/etcd/pki/etcd-key.pem \
+  member list
+ } 
+ 
+6. Better to export these as environment variables and connect to the clutser instead of a specific node
+{
+  export ETCDCTL_API=3 
+  export ETCDCTL_ENDPOINTS=https://172.16.16.221:2379,https://172.16.16.222:2379,https://172.16.16.223:2379
+  export ETCDCTL_CACERT=/etc/etcd/pki/ca.pem
+  export ETCDCTL_CERT=/etc/etcd/pki/etcd.pem
+  export ETCDCTL_KEY=/etc/etcd/pki/etcd-key.pem
+ }
+ 
+ 7. Once environmental variables are creted/exported:
+ {
+  etcdctl member list
+  etcdctl endpoint status
+  etcdctl endpoint health
+ }
