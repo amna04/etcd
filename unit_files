@@ -1,0 +1,47 @@
+{
+NODE_IP=$(ip addr show eth0 | grep "inet\b" | awk '{print $2}' | cut -d/ -f1)
+ETCD_NAME=$(hostname -s | tr [:upper:] [:lower:])
+
+ETCD1_IP="xx.xx.xx.xx"
+ETCD2_IP="xx.xx.xx.xx"
+ETCD3_IP="xx.xx.xx.xx"
+
+ETCD_HOST1="etcd01"
+ETCD_HOST2="etcd02"
+ETCD_HOST3="etcd03"
+
+
+cat <<EOF >/etc/systemd/system/etcd.service
+[Unit]
+Description=etcd service
+Documentation=https://github.com/coreos/etcd
+
+[Service]
+User=etcd
+Group=etcd
+Type=notify
+ExecStart=/usr/local/bin/etcd  --name ${ETCD_NAME} --initial-advertise-peer-urls https://${NODE_IP}:2380 \\
+  --listen-peer-urls https://${NODE_IP}:2380 \\
+  --listen-client-urls https://${NODE_IP}:2379,https://127.0.0.1:2379 \\
+  --advertise-client-urls https://${NODE_IP}:2379 \\
+  --initial-cluster-token etcd-cluster-1 \\  
+  --initial-cluster ${ETCD_HOST1}=https://${ETCD1_IP}:2380,${ETCD_HOST2}=https://${ETCD2_IP}:2380,${ETCD_HOST3}=https://${ETCD3_IP}:2380 \\
+  --cert-file=/etc/etcd/pki/${ETCD_NAME}.cer \\
+  --key-file=/etc/etcd/pki/${ETCD_NAME}_key.key \\
+  --peer-cert-file=/etc/etcd/pki/${ETCD_NAME}.cer \\
+  --peer-key-file=/etc/etcd/pki/${ETCD_NAME}_key.key \\
+  --trusted-ca-file=/etc/etcd/pki/ca_chain.cer \\
+  --peer-trusted-ca-file=/etc/etcd/pki/ca_chain.cer \\
+  --peer-client-cert-auth \\
+  --client-cert-auth \\  
+  --initial-cluster-state new
+  --data-dir /var/lib/etcd \\
+  --heartbeat-interval 1000 \\
+  --election-timeout 5000
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
+EOF
+}
