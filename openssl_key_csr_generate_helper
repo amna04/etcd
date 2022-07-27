@@ -1,0 +1,24 @@
+# Create private key:
+openssl genrsa -out private.key 4096
+
+# Generate the csr using the private key:
+openssl req -new -key private.key -out signing_req.csr -config openssl.config
+
+# Verify the csr:
+openssl req -in signing_req.csr -noout -text -verify
+
+# Testing the issued certificate:
+penssl x509 -in CLDETCDP349.cer -noout -text
+
+# To export the private key & the issued certificate all in one file
+openssl pkcs12 -export -out C:\SSL\cer_and_key.pfx -inkey C:\SSL\private.key -in C:\SSL\certnew.cer
+
+# To export the private key & the issued certificate and CA trust chain all in one file
+openssl pkcs12 -export -out certificate.pfx -inkey privateKey.key -in certificate.crt -certfile more.crt
+
+	¯ openssl – the command for executing OpenSSL
+	¯ pkcs12 – the file utility for PKCS#12 files in OpenSSL
+	¯ -export -out certificate.pfx – export and save the PFX file as certificate.pfx
+	¯ -inkey privateKey.key – use the private key file privateKey.key as the private key to combine with the certificate.
+	¯ -in certificate.crt – use certificate.crt as the certificate the private key will be combined with.
+	¯ -certfile more.crt – This is optional, this is if you have any additional certificates you would like to include in the PFX file.
