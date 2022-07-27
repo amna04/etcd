@@ -1,10 +1,13 @@
-1. Create the 'etcd' user and group:
+1. Create the 'etcd' user and group and required folder/s
 {
 	sudo mkdir -p /etc/etcd /var/lib/etcd
 	sudo groupadd -f -g 1501 etcd
 	sudo useradd -c "etcd user" -d /var/lib/etcd -s /bin/false -g etcd -u 1501 etcd
 	sudo chown -R etcd:etcd /var/lib/etcd
 }
+
+## user account should be a system user. System users are created with no expiry date. Their UIDs are chosen from the range of system user IDs specified in the login.defs file, which is different than the range used for normal users.
+
 
 2. download the required version, if possible directly, if not then download and transer to the node/s. Untar and move the required binaries. once moved, remove other files & folders.
 {
