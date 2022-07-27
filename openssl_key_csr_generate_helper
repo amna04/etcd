@@ -8,7 +8,7 @@ openssl req -new -key private.key -out signing_req.csr -config openssl.config
 openssl req -in signing_req.csr -noout -text -verify
 
 # Testing the issued certificate:
-penssl x509 -in CLDETCDP349.cer -noout -text
+penssl x509 -in certificate.cer -noout -text
 
 # To export the private key & the issued certificate all in one file
 openssl pkcs12 -export -out C:\SSL\cer_and_key.pfx -inkey C:\SSL\private.key -in C:\SSL\certnew.cer
