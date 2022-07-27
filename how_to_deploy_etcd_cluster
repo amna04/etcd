@@ -1,0 +1,19 @@
+1. Create the 'etcd' user and group:
+{
+	sudo mkdir -p /etc/etcd /var/lib/etcd
+	sudo groupadd -f -g 1501 etcd
+	sudo useradd -c "etcd user" -d /var/lib/etcd -s /bin/false -g etcd -u 1501 etcd
+	sudo chown -R etcd:etcd /var/lib/etcd
+}
+
+2. Untar the binary and move required files:
+{
+	sudo tar -xvf xxxxxxxxxx.tar.gz
+	sudo mv xxxxxxxxxx/etcd* /usr/local/bin/
+}
+
+3. Create folder for certificate related files and change file/folder permission
+{
+	sudo mkdir -p /etc/etcd/pki
+	sudo chown -R etcd:etcd /etc/etcd/
+}
